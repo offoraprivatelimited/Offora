@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const OfforaApp());
@@ -20,6 +21,12 @@ class OfforaApp extends StatelessWidget {
       home: const OfforaLandingPage(),
     );
   }
+}
+
+// --- Helpers ---
+Future<void> _launchUrl(String url) async {
+  final uri = Uri.parse(url);
+  await launchUrl(uri, mode: LaunchMode.externalApplication);
 }
 
 class MyHomePage extends StatefulWidget {
@@ -136,6 +143,8 @@ class OfforaLandingPage extends StatelessWidget {
             right: -100,
             child: BlurredCircle(size: 350, color: Colors.white10),
           ),
+          // Dark overlay for a more premium, contrasty background
+          Container(color: Colors.black54),
           CustomScrollView(
             slivers: [
               SliverList(
@@ -175,6 +184,7 @@ class HeroSection extends StatelessWidget {
     final double titleSize = isDesktop ? 100 : (isTablet ? 84 : 56);
     final double subTitleSize = isDesktop ? 24 : (isTablet ? 20 : 18);
     final double bodySize = isDesktop ? 16 : (isTablet ? 15 : 14);
+    final double comingSoonSize = isDesktop ? 56 : (isTablet ? 44 : 34);
     final double sectionHeight = isDesktop ? size.height : size.height * 0.9;
     final double maxWidth = isDesktop ? 1100 : (isTablet ? 900 : 800);
     return SizedBox(
@@ -219,17 +229,23 @@ class HeroSection extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 48),
-                const SubtleGlowText(
+                SubtleGlowText(
                   text: 'Coming Soon',
-                  fontSize: 32,
+                  fontSize: comingSoonSize,
                   color: Colors.white,
-                  gradient: LinearGradient(
-                    colors: [Color(0xFFFFD700), Colors.white],
+                  letterSpacing: 1.2,
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFFFFF4B0),
+                      Color(0xFFFFD700),
+                      Color(0xFFFFA000),
+                      Color(0xFFFFFFFF),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 48),
-                NotifyMeForm(isDesktop: isDesktop),
-                const SizedBox(height: 60),
+                const SizedBox(height: 36),
                 const SocialMediaIconsRow(),
               ],
             ),
@@ -320,13 +336,38 @@ class SocialMediaIconsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const shareUrl = 'https://legendaryone.in';
+    const shareText = 'Check out Offora — Discover the best offers from every store!';
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
-        SocialIcon(icon: Icons.facebook),
-        SocialIcon(icon: Icons.camera_alt),
-        SocialIcon(icon: Icons.link),
-        SocialIcon(icon: Icons.alternate_email),
+      children: [
+        SocialIcon(
+          icon: Icons.facebook,
+          onTap: () {
+            _launchUrl('https://www.facebook.com/sharer/sharer.php?u=$shareUrl');
+          },
+        ),
+        SocialIcon(
+          icon: Icons.alternate_email, // X/Twitter placeholder
+          onTap: () {
+            final url = Uri.encodeComponent(shareUrl);
+            final text = Uri.encodeComponent(shareText);
+            _launchUrl('https://twitter.com/intent/tweet?text=$text&url=$url');
+          },
+        ),
+        SocialIcon(
+          icon: Icons.business, // LinkedIn placeholder
+          onTap: () {
+            _launchUrl('https://www.linkedin.com/sharing/share-offsite/?url=$shareUrl');
+          },
+        ),
+        SocialIcon(
+          icon: Icons.chat, // WhatsApp placeholder
+          onTap: () {
+            final msg = Uri.encodeComponent('$shareText $shareUrl');
+            _launchUrl('https://wa.me/?text=$msg');
+          },
+        ),
       ],
     );
   }
@@ -475,28 +516,39 @@ class FooterSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 24),
       alignment: Alignment.center,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           const Text(
-            'Developed by Legendary One',
+            'Developed by ',
             style: TextStyle(
               color: Colors.white70,
               fontSize: 14,
               fontWeight: FontWeight.w400,
             ),
-            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 6),
           TextButton(
-            onPressed: () {},
+            style: ButtonStyle(
+              padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
+              foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+                if (states.contains(MaterialState.hovered)) {
+                  return const Color(0xFFFFD700); // yellow on hover
+                }
+                return Colors.white70; // default
+              }),
+              overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+            ),
+            onPressed: () {
+              // Open legendaryone.in (I can add url_launcher on request)
+            },
             child: const Text(
-              'legendaryone.in',
+              'Legendary One',
               style: TextStyle(
-                color: Color(0xFF6A11CB),
-                fontSize: 14,
                 decoration: TextDecoration.underline,
-                decorationColor: Color(0xFF6A11CB),
+                decorationColor: Colors.white38,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
@@ -649,6 +701,7 @@ class SubtleGlowText extends StatelessWidget {
   final FontWeight fontWeight;
   final Color color;
   final LinearGradient? gradient;
+  final double? letterSpacing;
 
   const SubtleGlowText({
     super.key,
@@ -657,6 +710,7 @@ class SubtleGlowText extends StatelessWidget {
     this.fontWeight = FontWeight.w600,
     this.color = Colors.white,
     this.gradient,
+    this.letterSpacing,
   });
 
   @override
@@ -665,7 +719,13 @@ class SubtleGlowText extends StatelessWidget {
       fontSize: fontSize,
       fontWeight: fontWeight,
       color: color,
-      shadows: [Shadow(color: color.withOpacity(0.6), blurRadius: 8.0)],
+      letterSpacing: letterSpacing,
+      shadows: [
+        Shadow(
+          color: color.withOpacity(0.6),
+          blurRadius: 8.0,
+        ),
+      ],
     );
 
     if (gradient != null) {
@@ -683,21 +743,34 @@ class SubtleGlowText extends StatelessWidget {
 
 class SocialIcon extends StatelessWidget {
   final IconData icon;
+  final VoidCallback? onTap;
 
-  const SocialIcon({super.key, required this.icon});
+  const SocialIcon({super.key, required this.icon, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.white.withOpacity(0.1),
-          border: Border.all(color: Colors.white24, width: 0.5),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(100),
+          hoverColor: Colors.white10,
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withOpacity(0.08),
+              border: Border.all(color: Colors.white24, width: 0.5),
+            ),
+            child: Icon(
+              icon,
+              color: Colors.white,
+              size: 22,
+            ),
+          ),
         ),
-        child: Icon(icon, color: Colors.white, size: 24),
       ),
     );
   }
