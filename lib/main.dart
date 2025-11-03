@@ -129,7 +129,12 @@ class OfforaLandingPage extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
+                colors: [
+                  Color(0xFF6A11CB),
+                  Color(0xFF2575FC),
+                  Color(0xFF1A1F71),
+                ],
+                stops: [0.0, 0.5, 1.0],
               ),
             ),
           ),
@@ -144,7 +149,15 @@ class OfforaLandingPage extends StatelessWidget {
             child: BlurredCircle(size: 350, color: Colors.white10),
           ),
           // Dark overlay for a more premium, contrasty background
-          Container(color: Colors.black54),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.black87, Colors.black54],
+              ),
+            ),
+          ),
           CustomScrollView(
             slivers: [
               SliverList(
@@ -193,7 +206,10 @@ class HeroSection extends StatelessWidget {
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: maxWidth),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: isDesktop ? 24 : 16, vertical: 24),
+            padding: EdgeInsets.symmetric(
+              horizontal: isDesktop ? 24 : 16,
+              vertical: 24,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -213,9 +229,16 @@ class HeroSection extends StatelessWidget {
                   'Discover the Best Offers from Every Store — All in One Place.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white70,
+                    color: Colors.white,
                     fontSize: subTitleSize,
-                    fontWeight: FontWeight.w300,
+                    fontWeight: FontWeight.w500,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -223,9 +246,16 @@ class HeroSection extends StatelessWidget {
                   'Offora helps you explore live discounts and deals from clothing, groceries, electronics, restaurants, and every type of store near you.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white54,
+                    color: Colors.white.withOpacity(0.85),
                     fontSize: bodySize,
                     height: 1.5,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 48),
@@ -291,10 +321,7 @@ class NotifyMeForm extends StatelessWidget {
                 const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
-                  child: GradientButton(
-                    label: 'Notify Me',
-                    onPressed: () {},
-                  ),
+                  child: GradientButton(label: 'Notify Me', onPressed: () {}),
                 ),
               ],
             )
@@ -307,7 +334,7 @@ class NotifyMeForm extends StatelessWidget {
                       hintText: 'Enter your email for early access...',
                       hintStyle: const TextStyle(color: Colors.white38),
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
+                      fillColor: Colors.white.withValues(alpha: 0.1),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
@@ -320,10 +347,7 @@ class NotifyMeForm extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                GradientButton(
-                  label: 'Notify Me',
-                  onPressed: () {},
-                ),
+                GradientButton(label: 'Notify Me', onPressed: () {}),
               ],
             ),
     );
@@ -337,14 +361,17 @@ class SocialMediaIconsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const shareUrl = 'https://legendaryone.in';
-    const shareText = 'Check out Offora — Discover the best offers from every store!';
+    const shareText =
+        'Check out Offora — Discover the best offers from every store!';
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SocialIcon(
           icon: Icons.facebook,
           onTap: () {
-            _launchUrl('https://www.facebook.com/sharer/sharer.php?u=$shareUrl');
+            _launchUrl(
+              'https://www.facebook.com/sharer/sharer.php?u=$shareUrl',
+            );
           },
         ),
         SocialIcon(
@@ -358,7 +385,9 @@ class SocialMediaIconsRow extends StatelessWidget {
         SocialIcon(
           icon: Icons.business, // LinkedIn placeholder
           onTap: () {
-            _launchUrl('https://www.linkedin.com/sharing/share-offsite/?url=$shareUrl');
+            _launchUrl(
+              'https://www.linkedin.com/sharing/share-offsite/?url=$shareUrl',
+            );
           },
         ),
         SocialIcon(
@@ -695,7 +724,7 @@ class _TimeCard extends StatelessWidget {
   }
 }
 
-class SubtleGlowText extends StatelessWidget {
+class SubtleGlowText extends StatefulWidget {
   final String text;
   final double fontSize;
   final FontWeight fontWeight;
@@ -714,62 +743,170 @@ class SubtleGlowText extends StatelessWidget {
   });
 
   @override
+  State<SubtleGlowText> createState() => _SubtleGlowTextState();
+}
+
+class _SubtleGlowTextState extends State<SubtleGlowText>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _glowAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _glowAnimation = Tween<double>(
+      begin: 0.6,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    TextStyle style = TextStyle(
-      fontSize: fontSize,
-      fontWeight: fontWeight,
-      color: color,
-      letterSpacing: letterSpacing,
-      shadows: [
-        Shadow(
-          color: color.withValues(alpha: 0.6),
-          blurRadius: 8.0,
-        ),
-      ],
+    return AnimatedBuilder(
+      animation: _glowAnimation,
+      builder: (context, child) {
+        TextStyle style = TextStyle(
+          fontSize: widget.fontSize,
+          fontWeight: widget.fontWeight,
+          color: widget.color,
+          letterSpacing: widget.letterSpacing,
+          shadows: [
+            Shadow(
+              color: widget.color.withOpacity(_glowAnimation.value * 0.6),
+              blurRadius: 12.0 * _glowAnimation.value,
+            ),
+            Shadow(
+              color: widget.color.withOpacity(_glowAnimation.value * 0.3),
+              blurRadius: 24.0 * _glowAnimation.value,
+            ),
+          ],
+        );
+
+        if (widget.gradient != null) {
+          return ShaderMask(
+            shaderCallback: (Rect bounds) {
+              return widget.gradient!.createShader(bounds);
+            },
+            child: Text(
+              widget.text,
+              style: style.copyWith(color: Colors.white),
+            ),
+          );
+        }
+
+        return Text(widget.text, style: style);
+      },
     );
-
-    if (gradient != null) {
-      return ShaderMask(
-        shaderCallback: (Rect bounds) {
-          return gradient!.createShader(bounds);
-        },
-        child: Text(text, style: style.copyWith(color: Colors.white)),
-      );
-    }
-
-    return Text(text, style: style);
   }
 }
 
-class SocialIcon extends StatelessWidget {
+class SocialIcon extends StatefulWidget {
   final IconData icon;
   final VoidCallback? onTap;
 
   const SocialIcon({super.key, required this.icon, this.onTap});
 
   @override
+  State<SocialIcon> createState() => _SocialIconState();
+}
+
+class _SocialIconState extends State<SocialIcon>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  bool _isHovered = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(100),
-          hoverColor: Colors.white10,
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white.withValues(alpha: 0.08),
-              border: Border.all(color: Colors.white24, width: 0.5),
-            ),
-            child: Icon(
-              icon,
-              color: Colors.white,
-              size: 22,
-            ),
-          ),
+      child: MouseRegion(
+        onEnter: (_) {
+          setState(() {
+            _isHovered = true;
+            _controller.forward();
+          });
+        },
+        onExit: (_) {
+          setState(() {
+            _isHovered = false;
+            _controller.reverse();
+          });
+        },
+        child: AnimatedBuilder(
+          animation: _scaleAnimation,
+          builder: (context, child) {
+            return Transform.scale(
+              scale: _scaleAnimation.value,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: widget.onTap,
+                  borderRadius: BorderRadius.circular(100),
+                  hoverColor: Colors.transparent,
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _isHovered
+                          ? Colors.white.withOpacity(0.15)
+                          : Colors.white.withOpacity(0.1),
+                      border: Border.all(
+                        color: _isHovered
+                            ? Colors.white.withOpacity(0.5)
+                            : Colors.white.withOpacity(0.2),
+                        width: 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withOpacity(
+                            _isHovered ? 0.15 : 0.05,
+                          ),
+                          blurRadius: 12,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      widget.icon,
+                      color: Colors.white.withOpacity(_isHovered ? 1 : 0.8),
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -789,12 +926,25 @@ class BlurredCircle extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: color,
+        gradient: RadialGradient(
+          colors: [
+            color.withOpacity(0.7),
+            color.withOpacity(0.5),
+            color.withOpacity(0.2),
+            color.withOpacity(0.0),
+          ],
+          stops: const [0.2, 0.5, 0.8, 1.0],
+        ),
         boxShadow: [
           BoxShadow(
-            color: color.withValues(alpha: 0.5),
-            blurRadius: size / 2,
-            spreadRadius: size / 4,
+            color: color.withOpacity(0.4),
+            blurRadius: size / 1.5,
+            spreadRadius: size / 6,
+          ),
+          BoxShadow(
+            color: color.withOpacity(0.2),
+            blurRadius: size,
+            spreadRadius: size / 3,
           ),
         ],
       ),
