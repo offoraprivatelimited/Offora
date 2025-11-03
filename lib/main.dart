@@ -130,9 +130,9 @@ class OfforaLandingPage extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFF6A11CB),
+                  Color(0xFF4A1BBF),
                   Color(0xFF2575FC),
-                  Color(0xFF1A1F71),
+                  Color(0xFF1E3FFF),
                 ],
                 stops: [0.0, 0.5, 1.0],
               ),
@@ -222,6 +222,19 @@ class HeroSection extends StatelessWidget {
                     fontSize: titleSize,
                     fontWeight: FontWeight.w900,
                     height: 1.0,
+                    letterSpacing: -1.0,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                      Shadow(
+                        color: const Color(0xFF4A1BBF).withOpacity(0.5),
+                        blurRadius: 24,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -231,11 +244,17 @@ class HeroSection extends StatelessWidget {
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: subTitleSize,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.3,
                     shadows: [
                       Shadow(
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                      Shadow(
                         color: Colors.black.withOpacity(0.3),
-                        blurRadius: 10,
+                        blurRadius: 16,
                         offset: const Offset(0, 4),
                       ),
                     ],
@@ -268,11 +287,12 @@ class HeroSection extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xFFFFF4B0),
+                      Color(0xFFFFE9B0),
                       Color(0xFFFFD700),
-                      Color(0xFFFFA000),
-                      Color(0xFFFFFFFF),
+                      Color(0xFFFF8C00),
+                      Color(0xFFFFD700),
                     ],
+                    stops: [0.0, 0.3, 0.7, 1.0],
                   ),
                 ),
                 const SizedBox(height: 36),
@@ -656,11 +676,30 @@ class _FeatureCard extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white12),
-              color: Colors.white.withValues(alpha: 0.05),
+              border: Border.all(color: Colors.white24, width: 1.5),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withOpacity(0.15),
+                  Colors.white.withOpacity(0.05),
+                ],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 16,
+                  offset: const Offset(0, 8),
+                ),
+                BoxShadow(
+                  color: Colors.white.withOpacity(0.1),
+                  blurRadius: 12,
+                  spreadRadius: -2,
+                ),
+              ],
             ),
             child: ShaderMask(
               shaderCallback: (Rect bounds) {
@@ -677,10 +716,18 @@ class _FeatureCard extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.w600,
+              letterSpacing: 0.2,
+              shadows: [
+                Shadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
           ),
         ],
