@@ -277,7 +277,7 @@ class NotifyMeForm extends StatelessWidget {
                     hintText: 'Enter your email for early access...',
                     hintStyle: const TextStyle(color: Colors.white38),
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.1),
+                    fillColor: Colors.white.withValues(alpha: 0.1),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
@@ -530,14 +530,14 @@ class FooterSection extends StatelessWidget {
           ),
           TextButton(
             style: ButtonStyle(
-              padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
-              foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-                if (states.contains(MaterialState.hovered)) {
+              padding: WidgetStateProperty.all<EdgeInsets>(EdgeInsets.zero),
+              foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+                if (states.contains(WidgetState.hovered)) {
                   return const Color(0xFFFFD700); // yellow on hover
                 }
                 return Colors.white70; // default
               }),
-              overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+              overlayColor: WidgetStateProperty.all<Color>(Colors.transparent),
             ),
             onPressed: () {
               // Open legendaryone.in (I can add url_launcher on request)
@@ -581,7 +581,7 @@ class GradientButton extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6A11CB).withOpacity(0.4),
+            color: Color(0xFF6A11CB).withValues(alpha: 0.4),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -631,7 +631,7 @@ class _FeatureCard extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white12),
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha: 0.05),
             ),
             child: ShaderMask(
               shaderCallback: (Rect bounds) {
@@ -722,7 +722,7 @@ class SubtleGlowText extends StatelessWidget {
       letterSpacing: letterSpacing,
       shadows: [
         Shadow(
-          color: color.withOpacity(0.6),
+          color: color.withValues(alpha: 0.6),
           blurRadius: 8.0,
         ),
       ],
@@ -761,7 +761,7 @@ class SocialIcon extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.08),
+              color: Colors.white.withValues(alpha: 0.08),
               border: Border.all(color: Colors.white24, width: 0.5),
             ),
             child: Icon(
@@ -792,7 +792,7 @@ class BlurredCircle extends StatelessWidget {
         color: color,
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.5),
+            color: color.withValues(alpha: 0.5),
             blurRadius: size / 2,
             spreadRadius: size / 4,
           ),
